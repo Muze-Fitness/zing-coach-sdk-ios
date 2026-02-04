@@ -3,29 +3,34 @@
 import PackageDescription
 
 let package = Package(
-    name: "ZingCoachSDK",
+    name: "ZingCoach",
     platforms: [.iOS(.v16)],
     products: [
-        .library(name: "ZingCoachSDK", targets: ["ZingCoachSDK"])
+        .library(name: "ZingCoach", targets: ["ZingCoach"])
     ],
     dependencies: [
+        .package(
+            url: "https://github.com/Muze-Fitness/zing-coach-sdk-ios-dynamic-dependencies.git",
+            branch: "main"
+        ),
         .package(url: "https://github.com/airbnb/lottie-ios.git", .upToNextMajor(from: "4.5.1")),
         .package(url: "https://github.com/SnapKit/SnapKit.git", .upToNextMajor(from: "5.6.0")),
     ],
     targets: [
         .binaryTarget(
-            name: "PrivateSDK",
-            url: "https://api.github.com/repos/Muze-Fitness/zing-coach-sdk-ios/releases/assets/328058985.zip",
-            checksum: "e2077f04353d26c31c82d56436ddd3b4931e32bcebbc32a51fd2009560cb46e9"
+            name: "ZingCoachSDK",
+            url: "https://github.com/Muze-Fitness/zing-coach-sdk-ios/releases/download/1.0.1/ZingCoachSDK.xcframework.zip",
+            checksum: "f2a765f63103db9cf39ce6bcd7ad9be619905580fd9a682351ef82310dbf29cf"
         ),
         .target(
-            name: "ZingCoachSDK",
+            name: "ZingCoach",
             dependencies: [
-                .target(name: "PrivateSDK"),
+                .target(name: "ZingCoachSDK"),
                 .product(name: "Lottie-Dynamic", package: "lottie-ios"),
                 .product(name: "SnapKit-Dynamic", package: "SnapKit"),
+                .product(name: "ZingCoachDynamicDependencies", package: "zing-coach-sdk-ios-dynamic-dependencies"),
             ],
-            path: "Sources/ZingCoachSDK"
+            path: "Sources/ZingCoach"
         ),
     ]
 )
