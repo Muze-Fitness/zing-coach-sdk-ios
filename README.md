@@ -181,6 +181,10 @@ present(previewVC, animated: true)
 // AI Assistant Chat
 let assistantVC = sdk.makeAssistantChat()
 present(assistantVC, animated: true)
+
+// Settings (edit user profile settings)
+let settingsVC = sdk.makeSettingsModule()
+present(settingsVC, animated: true)
 ```
 
 ### 5. Handle Custom Workout Creation (Optional)
