@@ -11,7 +11,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/Muze-Fitness/zing-coach-sdk-ios-dynamic-dependencies.git",
-            branch: "main"
+            .upToNextMajor(from: "1.0.0")
         ),
         .package(url: "https://github.com/airbnb/lottie-ios.git", .upToNextMajor(from: "4.5.1")),
         .package(url: "https://github.com/SnapKit/SnapKit.git", .upToNextMajor(from: "5.6.0")),
