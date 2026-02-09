@@ -11,7 +11,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/Muze-Fitness/zing-coach-sdk-ios-dynamic-dependencies.git",
-            .upToNextMajor(from: "1.0.0")
+            .upToNextMajor(from: "1.0.1")
         ),
         .package(url: "https://github.com/airbnb/lottie-ios.git", .upToNextMajor(from: "4.5.1")),
         .package(url: "https://github.com/SnapKit/SnapKit.git", .upToNextMajor(from: "5.6.0")),
@@ -19,8 +19,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "ZingCoachSDK",
-            url: "https://github.com/Muze-Fitness/zing-coach-sdk-ios/releases/download/1.0.6/ZingCoachSDK.xcframework.zip",
-            checksum: "1fa2c6926c1d47d12268d72a6e64256712bf23b0e475967bc65af093b8e5f398"
+            url: "https://github.com/Muze-Fitness/zing-coach-sdk-ios/releases/download/1.0.7/ZingCoachSDK.xcframework.zip",
+            checksum: "b99eeace331ff6cabb1c1fa65817944750aa1c522923643980f8cb6932f8b247"
         ),
         .target(
             name: "ZingCoach",
