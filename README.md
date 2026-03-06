@@ -35,7 +35,7 @@ The SDK instance owns internal state and resources. Releasing it deallocates int
 ```swift
 let result = await ZingSDK.initialize(
     with: .init(
-        authentication: .serverSide(provider: self),
+        authentication: .externalToken(provider: self),
         errorHandler: self
     )
 )
@@ -50,7 +50,7 @@ case .failure(let error):
 
 ### 3. Authentication
 
-#### Server-Side Authentication
+#### External Token Authentication
 
 Use this mode when your backend manages user authentication and issues JWT tokens.
 
@@ -62,7 +62,7 @@ Use this mode when your backend manages user authentication and issues JWT token
 ```swift
 let result = await ZingSDK.initialize(
     with: .init(
-        authentication: .serverSide(provider: self),
+        authentication: .externalToken(provider: self),
         errorHandler: self
     )
 )
@@ -70,7 +70,7 @@ let result = await ZingSDK.initialize(
 switch result {
 case .success(let sdk):
     self.sdk = sdk
-    sdk.login()
+    _ = await sdk.login()
 case .failure(let error):
     print("Initialization failed: \(error)")
 }
@@ -93,6 +93,8 @@ extension YourErrorHandler: ZingSDK.ErrorHandler {
 }
 ```
 
+**Error types:**
+
 ```swift
 extension ZingSDK {
     enum Error: Swift.Error {
@@ -102,11 +104,10 @@ extension ZingSDK {
 
     enum AuthError: Swift.Error {
         /// The partner user ID in the new token does not match the previously authenticated user.
-        /// This prevents unintended user switching during token refresh.
         case partnerIDMismatch
         /// The token is invalid: either malformed JWT structure or missing required "sub" claim.
         case badToken
-        /// The external authentication provider returned an error (e.g., network failure, invalid credentials).
+        /// The external authentication provider returned an error.
         case externalError(Swift.Error)
     }
 
@@ -115,8 +116,6 @@ extension ZingSDK {
         case alreadyLoggedIn
         /// Login was attempted while another login operation is in progress.
         case loginAlreadyInProgress
-        /// Logout was attempted when no user is currently logged in.
-        case notLoggedIn
         /// Token retrieval failed during the login process.
         /// The underlying cause may be a badToken, partnerIDMismatch, or externalError.
         case failedToGetToken
@@ -124,17 +123,22 @@ extension ZingSDK {
         /// This typically indicates a network error when fetching user profile data.
         case failedToGetProfile
     }
+
+    enum LogoutError: Swift.Error {
+        /// Logout was attempted when no user is currently logged in.
+        case notLoggedIn
+    }
 }
 ```
 
-#### Guest Authentication
+#### API Key Authentication
 
 Use this mode for testing or when backend integration is not available:
 
 ```swift
 let result = await ZingSDK.initialize(
     with: .init(
-        authentication: .guest(apiKey: "your-api-key"),
+        authentication: .apiKey(key: "your-api-key"),
         errorHandler: errorHandler
     )
 )
@@ -145,24 +149,51 @@ let result = await ZingSDK.initialize(
 After successful SDK initialization, call `login()` to authenticate the user and start a session:
 
 ```swift
-sdk.login()
+let result = await sdk.login()
+switch result {
+case .success:
+    // User logged in successfully
+case .failure(let error):
+    // Handle LoginError
+}
 ```
 
-The SDK will request a token from your `AuthProvider` and establish the user session. Login errors are delivered through your `ErrorHandler`.
+The SDK will request a token from your `AuthProvider` and establish the user session. Login errors are delivered through your `ErrorHandler` and returned from `login()`.
+
+**Login state:**
+
+```swift
+// Current state
+let state: ZingSDK.LoginState = sdk.loginState  // .loggedOut | .inProgress | .loggedIn(userID: String)
+
+// Reactive updates
+sdk.loginStatePublisher
+    .sink { state in /* handle state changes */ }
+    .store(in: &cancellables)
+
+// Quick check
+let isLoggedIn: Bool = sdk.isLoggedIn
+```
 
 #### Logout
 
 Call `logout()` when your user signs out of your app:
 
 ```swift
-sdk.logout()
+let result = await sdk.logout()
+switch result {
+case .success:
+    // User logged out successfully
+case .failure(let error):
+    // Handle LogoutError (e.g. .notLoggedIn)
+}
 ```
 
 This clears the user session and stops background sync. You can call `login()` again to start a new session.
 
 ### 4. Present SDK Modules
 
-All SDK modules return `UIViewController`. Present them modally or embed in your navigation:
+All SDK modules return `UIViewController`. Present them modally or embed in your navigation. All module factory methods require `@MainActor`:
 
 ```swift
 // Custom Workout Builder
@@ -182,9 +213,13 @@ present(previewVC, animated: true)
 let assistantVC = sdk.makeAssistantChat()
 present(assistantVC, animated: true)
 
-// Settings (edit user profile settings)
-let settingsVC = sdk.makeSettingsModule()
+// Profile Settings (edit user profile settings)
+let settingsVC = sdk.makeProfileSettings()
 present(settingsVC, animated: true)
+
+// Full Schedule
+let scheduleVC = sdk.makeFullSchedule()
+present(scheduleVC, animated: true)
 ```
 
 ### 5. Handle Custom Workout Creation (Optional)
