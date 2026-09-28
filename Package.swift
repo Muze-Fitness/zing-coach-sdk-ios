@@ -9,14 +9,14 @@ let package = Package(
         .library(name: "ZingCoach", targets: ["ZingCoach"])
     ],
     dependencies: [
-        .package(url: "https://github.com/Muze-Fitness/zing-coach-ios-tools", exact: "1.6.0"),
+        .package(url: "https://github.com/Muze-Fitness/zing-coach-ios-tools", exact: "1.7.0"),
         .package(url: "https://github.com/SnapKit/SnapKit.git", .upToNextMajor(from: "5.6.0")),
     ],
     targets: [
         .binaryTarget(
             name: "ZingCoachSDK",
-            url: "https://github.com/Muze-Fitness/zing-coach-sdk-ios/releases/download/2.2.0/ZingCoachSDK.xcframework.zip",
-            checksum: "37337594a8654c1187d1785933ac9afb630ff3224720d8c76e935ebdd29c5dfa"
+            url: "https://github.com/Muze-Fitness/zing-coach-sdk-ios/releases/download/2.3.0/ZingCoachSDK.xcframework.zip",
+            checksum: "e86e2cdc8b8983f8d644ba0d274a847a58313704c2055c71c76dee09a0f140d2"
         ),
         .target(
             name: "ZingCoach",
