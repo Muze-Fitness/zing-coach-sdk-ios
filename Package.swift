@@ -15,8 +15,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "ZingCoachSDK",
-            url: "https://github.com/Muze-Fitness/zing-coach-sdk-ios/releases/download/2.4.0/ZingCoachSDK.xcframework.zip",
-            checksum: "de37d822796ea88fd454235b744c06046d7c11944e0bdcefe53488e08553f8ca"
+            url: "https://github.com/Muze-Fitness/zing-coach-sdk-ios/releases/download/2.5.0/ZingCoachSDK.xcframework.zip",
+            checksum: "97876718a274f928a86edfd6ba6d56918a4bfdd675cdfec7919715f1a896be2c"
         ),
         .target(
             name: "ZingCoach",
